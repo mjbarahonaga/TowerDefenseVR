@@ -20,11 +20,13 @@ public class EnemyBehaviour : MonoBehaviour, ISpawnable
     [ReadOnly, SerializeField] private int _idSpawn;
     [ReadOnly, SerializeField] private int _idWalk;
     [ReadOnly, SerializeField] private int _idDie;
+    public bool IsDie = false;
+
     public Transform _myTransform;
     public Transform _myParentTransform;
 
     private int _reward;
-    private int _currentHP;
+    [ReadOnly, SerializeField] private int _currentHP;
 
     private TypePool _typePool;
     public TypePool MyPool { get => _typePool; set => _typePool = value; }
@@ -87,12 +89,13 @@ public class EnemyBehaviour : MonoBehaviour, ISpawnable
     {
         Initialising = false; //< It is ready
         //OnValidate(); //< Check to get every reference and variable cached
-
+        
         _ = AsyncStart();
     }
 
     async UniTask AsyncStart()
     {
+        IsDie = false;
         _animator.SetTrigger(_idSpawn);
         await UniTask.Delay((int)_animator.GetCurrentAnimatorStateInfo(0).length * 1000);
         _animator.SetTrigger(_idWalk);
@@ -105,20 +108,23 @@ public class EnemyBehaviour : MonoBehaviour, ISpawnable
     async UniTask AsyncDying()
     {
         GameManager.Instance.AddCoins(_reward);
-
         _navMeshAgent.isStopped = true;
         _animator.SetTrigger(_idDie);
         await UniTask.Delay((int)_animator.GetCurrentAnimatorStateInfo(0).length * 1000);
-
-        GameManager.Instance.ReturnEnemyToPool(this);
+        GameManager.Instance.ReturnEnemyToPool(this,true);
     }
 
     public void TakeDamage(int damage)
     {
         _currentHP -= damage;
-        if (damage > 0) return;
-
+        if (_currentHP > 0 || IsDie) return;
+        IsDie = true;
         _ = AsyncDying();
+    }
+
+    public void ResetGame()
+    {
+
     }
 
 }

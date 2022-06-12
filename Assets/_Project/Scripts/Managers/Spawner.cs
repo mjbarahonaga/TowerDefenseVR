@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 
 public enum TypePool
 {
-    Bullets_Pool,
+    Default_Bullets_Pool,
     Ghoul_Pool,
     Ghoul_Boss_Pool,
     Ghoul_Festering_Pool,
@@ -31,8 +31,6 @@ public class Spawner : CustomSerializedMonoBehaviour
     private void Start()
     {
         SpawnPools();
-        Debug.Log(PoolDictionary[TypePool.Ghoul_Pool].Count + " = Ghouls");
-        Debug.Log(PoolDictionary[TypePool.Ghoul_Boss_Pool].Count + " = Boss Ghouls");
         
     }
 

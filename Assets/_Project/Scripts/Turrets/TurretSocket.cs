@@ -5,7 +5,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 using System;
 
 [RequireComponent(typeof(BoxCollider))]
-[RequireComponent(typeof(XRSocketInteractor))]
+[RequireComponent(typeof(XRSimpleInteractable))]
 [RequireComponent(typeof(MeshRenderer))]
 public class TurretSocket : MonoBehaviour
 {

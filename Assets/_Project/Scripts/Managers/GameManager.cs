@@ -16,8 +16,14 @@ public class GameManager : Singleton<GameManager>
     [Sirenix.OdinInspector.ReadOnly, SerializeField] private int _currentLives;
     [FoldoutGroup("Variables Game")]
     [SerializeField] private int _currentHorde = 0;
+    [SerializeField] private int _enemiesKilled = 0;
     private Spawner _spawner;
 
+    public static Action<int> OnUpdateCoins;
+    public static Action<int> OnUpdateEnemiesKilled;
+    public static Action<int> OnUpdateCurrentHorde;
+    public static Action<int> OnUpdateCurrentLives;
+    public static Action OnFinish;
     [Serializable]
     public struct EnemySpawnByHorde
     {
@@ -63,8 +69,6 @@ public class GameManager : Singleton<GameManager>
         OnValidate(); //< To check cached variables
 
         TeleportationProviderCustom.OnTeleport += SendPositionXR;
-
-        InitGame();
     }
 
     private void OnDestroy()
@@ -78,11 +82,19 @@ public class GameManager : Singleton<GameManager>
     {
         _currentLives = InitialLives;
         _currentHorde = 0;
+
+        AddCoins(20);
+        OnUpdateCurrentHorde?.Invoke(0);
+        OnUpdateEnemiesKilled?.Invoke(0);
+        OnUpdateCurrentLives?.Invoke(_currentLives);
+
+        NewHorde();
     }
 
     public void NewHorde()
     {
         ++_currentHorde;
+        OnUpdateCurrentHorde?.Invoke(_currentHorde);
         _ = SpawnHorde(_currentHorde);
     }
 
@@ -124,7 +136,7 @@ public class GameManager : Singleton<GameManager>
     public void TakeDamage()
     {
         --_currentLives;
-
+        OnUpdateCurrentLives?.Invoke(_currentLives);
         // Update Feedback
 
         if (_currentLives > 0) return;
@@ -133,18 +145,25 @@ public class GameManager : Singleton<GameManager>
 
     public void GameOver()
     {
-
+        OnFinish?.Invoke();
+        _currentHorde = 0;
     }
 
     public void AddCoins(int coins)
     {
         Coins += coins;
+        OnUpdateCoins?.Invoke(Coins);
     }
 
     
-    public void ReturnEnemyToPool(EnemyBehaviour enemy)
+    public void ReturnEnemyToPool(EnemyBehaviour enemy, bool isKilled = false)
     {
         --_currentEnemiesOnScene;
+        if (isKilled)
+        {
+            ++_enemiesKilled;
+            OnUpdateEnemiesKilled?.Invoke(_enemiesKilled);
+        }
         _spawner.ReturnToPool(enemy.MyPool, enemy.transform.parent.gameObject);
         
         CheckEndHorde();
@@ -153,6 +172,11 @@ public class GameManager : Singleton<GameManager>
     public void ReturnToPool(TypePool type,GameObject obj)
     {
         _spawner.ReturnToPool(type, obj);
+    }
+
+    public GameObject GetFromPool(TypePool type)
+    {
+        return _spawner.GetFromPool(type);
     }
 
     public void CheckEndHorde()
