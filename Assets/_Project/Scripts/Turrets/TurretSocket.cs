@@ -19,13 +19,15 @@ public class TurretSocket : MonoBehaviour
         {
             if (this == null) return;
 
-            if(_myTransform == null) _myTransform = this.transform;
+            if(_myTransform == null) _myTransform = GetComponent<Transform>();
             if(_meshRenderer == null) _meshRenderer = GetComponent<MeshRenderer>();
         });
     }
 
-    private void Start()
+    private void Awake()
     {
+        OnValidate();   //< To check cached variables
+
         GameManager.OnPositionCharacter += CheckIfThisCanShow;
     }
 

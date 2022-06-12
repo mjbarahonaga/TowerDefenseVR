@@ -1,6 +1,6 @@
 ﻿using System;
 using UnityEngine;
-
+using Sirenix.OdinInspector;
 public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
 	private static T _instance;
@@ -54,7 +54,10 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 		}
 	}
 
-	private static bool applicationIsQuitting = false;
+	 private static bool applicationIsQuitting = false;
+
+	private void Awake() => applicationIsQuitting = false;
+
 	/// <summary>
 	/// When Unity quits, it destroys objects in a random order.
 	/// In principle, a Singleton is only destroyed when application quits.
