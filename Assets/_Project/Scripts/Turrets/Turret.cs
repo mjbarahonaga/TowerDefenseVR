@@ -72,19 +72,24 @@ public class Turret : MonoBehaviour
         _currentLevelIndex = 0;
         _currentLVL = LVLs[_currentLevelIndex];
         SetUp(_currentLVL);
-        if(!RefBuyOptions) RefBuyOptions = GetComponentInChildren<BuyOptions>();
+        if(!RefBuyOptions) RefBuyOptions = transform.parent.gameObject.GetComponentInChildren<BuyOptions>();
         RefBuyOptions?.UpdatePrice(LVLs[_currentLevelIndex + 1]);    // Next LVL
         RefBuyOptions.transform.parent.gameObject.SetActive(false);
         RefBuyOptions.gameObject.SetActive(true);
-        GameManager.OnFinish += () => this.gameObject.SetActive(false);
+        GameManager.OnFinish += ResetTurret;
         _coroutine = Timing.RunCoroutine(MyUpdate(), Segment.SlowUpdate);
     }
+
+    
 
     private void OnDisable()
     {
         RefBuyOptions?.UpdatePrice(LVLs[0]);
-        GameManager.OnFinish -= () => this.gameObject.SetActive(false);
+        GameManager.OnFinish -= ResetTurret;
     }
+
+    public void ResetTurret() => transform.parent.gameObject.SetActive(false);
+
 
     private void OnDestroy()
     {
@@ -138,17 +143,6 @@ public class Turret : MonoBehaviour
         RefBuyOptions.transform.parent.gameObject.SetActive(false);
 
         SetUp(LVLs[_currentLevelIndex]);
-        //        SetUp(LVLs[i + 1]);
-        //for (int i = 0; i < LVLs.Count; ++i)
-        //{
-        //    if (_currentLVL == LVLs[i] && i == limit) return; //< No more lvls
-        //    if (_currentLVL == LVLs[i])
-        //    {
-        //        if ((i + 1) != limit) RefBuyOptions?.UpdatePrice(LVLs[i + 2]);
-        //        if(i == limit) RefBuyOptions.gameObject.SetActive(false);
-        //        RefBuyOptions.transform.parent.gameObject.SetActive(false);
-        //        SetUp(LVLs[i + 1]);
-        //    }
-        //}
+
     }
 }

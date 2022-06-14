@@ -31,14 +31,15 @@ public class BuyOptions : MonoBehaviour
     public void TryToBuy()
     {
         if (dataLevel == null) return;
-        if(GameManager.Instance.Coins >= dataLevel.Price)
+        int price = dataLevel.Price;
+        if (GameManager.Instance.Coins >= price)
         {
             if (RefSellOptions)
             {
-                RefSellOptions.UpdatePrice(dataLevel.Price);
+                RefSellOptions.UpdatePrice(price);
                 dataLevel = null;
             }
-            GameManager.Instance.AddCoins(-dataLevel.Price);
+            GameManager.Instance.AddCoins(-price);
             EventsToExecuteWhenBuy?.Invoke();
         }
     }

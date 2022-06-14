@@ -259,7 +259,7 @@ MonoBehaviour:
   HowManyShotsBySecond: 1
   PositionExitBullets: {fileID: 4171773708063386530}
   Targets: []
-  _refBuyObj: {fileID: 8533194996071346492}
+  RefBuyOptions: {fileID: 8533194996071346492}
 --- !u!1 &4171773708303867826
 GameObject:
   m_ObjectHideFlags: 0

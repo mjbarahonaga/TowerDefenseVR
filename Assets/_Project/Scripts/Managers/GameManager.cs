@@ -4,7 +4,7 @@ using Unity.XR.CoreUtils;
 using UnityEngine;
 using System;
 using Sirenix.OdinInspector;
-using Cysharp.Threading.Tasks;
+using MEC;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -18,7 +18,7 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] private int _currentHorde = 0;
     [SerializeField] private int _enemiesKilled = 0;
     private Spawner _spawner;
-
+    private CoroutineHandle _coroutine;
     public static Action<int> OnUpdateCoins;
     public static Action<int> OnUpdateEnemiesKilled;
     public static Action<int> OnUpdateCurrentHorde;
@@ -97,10 +97,10 @@ public class GameManager : Singleton<GameManager>
     {
         ++_currentHorde;
         OnUpdateCurrentHorde?.Invoke(_currentHorde);
-        _ = SpawnHorde(_currentHorde);
+        _coroutine = Timing.RunCoroutine(SpawnHorde(_currentHorde));
     }
 
-    async UniTask SpawnHorde(int currentHorde)
+    IEnumerator<float> SpawnHorde(int currentHorde)
     {
         //await UniTask.Yield();
         int length = EnemySpawnByHordeList.Count;
@@ -125,9 +125,10 @@ public class GameManager : Singleton<GameManager>
                 var enemy = _spawner.GetFromPool(typePool);
                 enemy.SetActive(true);
                 enemy.GetComponentInChildren<EnemyBehaviour>().Init(respawn.Target.position, respawn.transform);
-                await UniTask.Delay(1000);   //< time in ms to spawn each enemy spawn
+                yield return Timing.WaitForSeconds(1);   //< time in ms to spawn each enemy spawn
             }
         }
+        yield return 0f;
     }
 
     private void SendPositionXR()
@@ -148,6 +149,7 @@ public class GameManager : Singleton<GameManager>
     public void GameOver()
     {
         OnFinish?.Invoke();
+        Timing.KillCoroutines(_coroutine);
         _currentHorde = 0;
         Coins = 0;
         AddCoins(40);

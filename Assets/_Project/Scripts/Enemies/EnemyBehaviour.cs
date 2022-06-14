@@ -37,6 +37,16 @@ public class EnemyBehaviour : MonoBehaviour, ISpawnable
         SetUpEnemy();
     }
 
+    private void OnEnable()
+    {
+        GameManager.OnFinish += ResetGame;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnFinish -= ResetGame;
+    }
+
     private void OnValidate()
     {
         Utils.ValidationUtility.SafeOnValidate(() =>
@@ -124,7 +134,7 @@ public class EnemyBehaviour : MonoBehaviour, ISpawnable
 
     public void ResetGame()
     {
-
+        GameManager.Instance.ReturnEnemyToPool(this, true);
     }
 
 }
