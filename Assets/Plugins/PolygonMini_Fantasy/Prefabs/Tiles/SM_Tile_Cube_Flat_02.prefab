@@ -108,13 +108,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 0}
-  m_Colliders: []
+  m_Colliders:
+  - {fileID: -4714734123623905993}
   m_InteractionLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
   m_InteractionLayers:
     m_Bits: 1
-  m_SelectMode: 1
+  m_SelectMode: 0
   m_CustomReticle: {fileID: 0}
   m_FirstHoverEntered:
     m_PersistentCalls:
@@ -186,25 +187,35 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4411077248703420}
     m_Modifications:
-    - target: {fileID: 6475843122925531489, guid: 6c45ce08ed44cf140bea826787e78712,
+    - target: {fileID: 597817783138883032, guid: 6c45ce08ed44cf140bea826787e78712,
         type: 3}
-      propertyPath: m_RootOrder
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2370545882666698295, guid: 6c45ce08ed44cf140bea826787e78712,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.052
+      objectReference: {fileID: 0}
+    - target: {fileID: 2370545882666698295, guid: 6c45ce08ed44cf140bea826787e78712,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.038
+      objectReference: {fileID: 0}
+    - target: {fileID: 4321721315391572332, guid: 6c45ce08ed44cf140bea826787e78712,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4413815540239882181, guid: 6c45ce08ed44cf140bea826787e78712,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6475843122925531489, guid: 6c45ce08ed44cf140bea826787e78712,
         type: 3}
-      propertyPath: m_LocalScale.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6475843122925531489, guid: 6c45ce08ed44cf140bea826787e78712,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 6475843122925531489, guid: 6c45ce08ed44cf140bea826787e78712,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 2
+      propertyPath: m_RootOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6475843122925531489, guid: 6c45ce08ed44cf140bea826787e78712,
         type: 3}
@@ -260,11 +271,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: TurretPlace
-      objectReference: {fileID: 0}
-    - target: {fileID: 6475843122925531500, guid: 6c45ce08ed44cf140bea826787e78712,
-        type: 3}
-      propertyPath: DistanceToShow
-      value: 15
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6c45ce08ed44cf140bea826787e78712, type: 3}

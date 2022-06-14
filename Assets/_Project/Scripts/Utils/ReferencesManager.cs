@@ -33,6 +33,10 @@ public class ReferencesManager : MonoBehaviour
         length = listInteractables.Length;
         for (int i = 0; i < length; i++) listInteractables[i].interactionManager = InteractionManager;
 
+        var listSimpleInteraction = FindObjectsOfType<XRSimpleInteractable>();
+        length = listSimpleInteraction.Length;
+        for (int i = 0; i < length; i++) listSimpleInteraction[i].interactionManager = InteractionManager;
+
         Debug.Log("Complete");
     }
 #endif

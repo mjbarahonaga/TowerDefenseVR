@@ -13,6 +13,8 @@ public class TurretSocket : MonoBehaviour
     public float DistanceToShow = 50f;
     private Transform _myTransform;
     private MeshRenderer _meshRenderer;
+    public GameObject PanelStore;
+
     private void OnValidate()
     {
         Utils.ValidationUtility.SafeOnValidate(() =>
@@ -42,6 +44,7 @@ public class TurretSocket : MonoBehaviour
 
         if (distance >= DistanceToShow) {
             _meshRenderer.enabled = false;
+            PanelStore.SetActive(false);
             return; 
         }
 

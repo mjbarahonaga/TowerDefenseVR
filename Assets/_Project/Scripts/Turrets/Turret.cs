@@ -1,12 +1,17 @@
-﻿using Cysharp.Threading.Tasks;
+﻿
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
+using MEC;
 using UnityEngine;
 
 [RequireComponent(typeof(SphereCollider))]
 public class Turret : MonoBehaviour
 {
+
+    public List<DataLevelTurret> LVLs = new List<DataLevelTurret>();
+    private DataLevelTurret _currentLVL;
+
     public DataBullet Data;
 
     public float HowManyShotsBySecond = 1;
@@ -15,7 +20,13 @@ public class Turret : MonoBehaviour
 
     public List<EnemyBehaviour> Targets;
 
-    private UniTask _task;
+    private MeshRenderer _renderer;
+
+    private CoroutineHandle _coroutine;
+
+    public BuyOptions RefBuyOptions;
+
+    int _currentLevelIndex;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -35,7 +46,7 @@ public class Turret : MonoBehaviour
         return;
     }
 
-    async UniTask MyUpdate()
+    IEnumerator<float> MyUpdate()
     {
         while (true)
         {
@@ -43,23 +54,41 @@ public class Turret : MonoBehaviour
             {
                 if (Shot())
                 {
-                    await UniTask.Delay((int)(1000f / HowManyShotsBySecond));
+                    yield return Timing.WaitForSeconds(1f / HowManyShotsBySecond);
                 }
             }
-            else await UniTask.WaitForEndOfFrame(this);
+            yield return Timing.WaitForOneFrame;
         }
     }
-
-    private void Start()
+    private void Awake()
     {
-        _task = MyUpdate();
         
-       
+        _renderer = GetComponent<MeshRenderer>();
+        
+    }
+
+    private void OnEnable()
+    {
+        _currentLevelIndex = 0;
+        _currentLVL = LVLs[_currentLevelIndex];
+        SetUp(_currentLVL);
+        if(!RefBuyOptions) RefBuyOptions = GetComponentInChildren<BuyOptions>();
+        RefBuyOptions?.UpdatePrice(LVLs[_currentLevelIndex + 1]);    // Next LVL
+        RefBuyOptions.transform.parent.gameObject.SetActive(false);
+        RefBuyOptions.gameObject.SetActive(true);
+        GameManager.OnFinish += () => this.gameObject.SetActive(false);
+        _coroutine = Timing.RunCoroutine(MyUpdate(), Segment.SlowUpdate);
+    }
+
+    private void OnDisable()
+    {
+        RefBuyOptions?.UpdatePrice(LVLs[0]);
+        GameManager.OnFinish -= () => this.gameObject.SetActive(false);
     }
 
     private void OnDestroy()
     {
-        
+        Timing.KillCoroutines(_coroutine);
     }
 
     private bool Shot()
@@ -67,11 +96,12 @@ public class Turret : MonoBehaviour
 
         int length = Targets.Count;
         Transform enemy = null;
-        for (int i = 0; i < length; i++)
+        for (int i = 0; i < length; ++i)
         {
-            if (Targets[i].IsDie)
+            if (Targets[i].IsDie == true)
             {
                 Targets.Remove(Targets[i]);
+                --length;
                 continue;
             }
             if (Targets[i].isActiveAndEnabled)
@@ -81,10 +111,44 @@ public class Turret : MonoBehaviour
             }
         }
         if (enemy == null) return false;
-
+        transform.LookAt(enemy);
         var bullet = GameManager.Instance.GetFromPool(TypePool.Default_Bullets_Pool).GetComponent<BulletBehaviour>();
         bullet.gameObject.SetActive(true);
         bullet.Init(Data, PositionExitBullets, enemy);
         return true;
+    }
+
+    private void SetUp(DataLevelTurret lvl)
+    {
+        _renderer.material = lvl.MaterialTurret;
+        Data = lvl.DataBullet;
+        _currentLVL = lvl;
+    }
+
+    public void NextLevel()
+    {
+        int limit = LVLs.Count - 1;
+        if (_currentLevelIndex > limit) return;
+
+        ++_currentLevelIndex;
+
+        if(_currentLevelIndex != limit) RefBuyOptions?.UpdatePrice(LVLs[_currentLevelIndex + 1]);
+        else RefBuyOptions.gameObject.SetActive(false);
+
+        RefBuyOptions.transform.parent.gameObject.SetActive(false);
+
+        SetUp(LVLs[_currentLevelIndex]);
+        //        SetUp(LVLs[i + 1]);
+        //for (int i = 0; i < LVLs.Count; ++i)
+        //{
+        //    if (_currentLVL == LVLs[i] && i == limit) return; //< No more lvls
+        //    if (_currentLVL == LVLs[i])
+        //    {
+        //        if ((i + 1) != limit) RefBuyOptions?.UpdatePrice(LVLs[i + 2]);
+        //        if(i == limit) RefBuyOptions.gameObject.SetActive(false);
+        //        RefBuyOptions.transform.parent.gameObject.SetActive(false);
+        //        SetUp(LVLs[i + 1]);
+        //    }
+        //}
     }
 }

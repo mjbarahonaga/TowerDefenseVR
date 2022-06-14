@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f67792a0dea8254b98c3a3be0eed147, type: 3}
-  m_Name: DefaultBullet_0
+  m_Script: {fileID: 11500000, guid: b1d97c760bde461478392d79827cd97b, type: 3}
+  m_Name: TurretLvl_3
   m_EditorClassIdentifier: 
-  TypePool: 0
-  Damage: 3
-  Speed: 100
-  LifeTime: 5
+  Price: 30
+  DataBullet: {fileID: 11400000, guid: cd510bf6f0d092f4592aaa7e2fc3e305, type: 2}
+  MaterialTurret: {fileID: 2100000, guid: d988a7eb3b7957546ab34a5560184a4b, type: 2}

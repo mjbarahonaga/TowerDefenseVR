@@ -69,6 +69,8 @@ public class GameManager : Singleton<GameManager>
         OnValidate(); //< To check cached variables
 
         TeleportationProviderCustom.OnTeleport += SendPositionXR;
+
+        AddCoins(40);
     }
 
     private void OnDestroy()
@@ -83,7 +85,7 @@ public class GameManager : Singleton<GameManager>
         _currentLives = InitialLives;
         _currentHorde = 0;
 
-        AddCoins(20);
+        
         OnUpdateCurrentHorde?.Invoke(0);
         OnUpdateEnemiesKilled?.Invoke(0);
         OnUpdateCurrentLives?.Invoke(_currentLives);
@@ -147,6 +149,8 @@ public class GameManager : Singleton<GameManager>
     {
         OnFinish?.Invoke();
         _currentHorde = 0;
+        Coins = 0;
+        AddCoins(40);
     }
 
     public void AddCoins(int coins)
